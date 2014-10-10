@@ -1,3 +1,5 @@
+require 'json'
+
 # Information about a mod included in the pack
 class Mod
   # Unique ID of the mod
@@ -22,6 +24,36 @@ class Mod
   attr_reader :notes
   
   # Indicates whether the mod is a coremod
-  attr_reader :core?
+  attr_reader :core
+  
+  # Create a new mod reference
+  def initialize (id, name, author, version, mc_version, url, notes, core)
+    @id         = id
+    @name       = name
+    @author     = author
+    @version    = version
+    @mc_version = mc_version
+    @url        = url
+    @notes      = notes
+    @core       = core
+  end
+  
+  # Loads mod information from a file
+  # @param path [String] Path to the file to load from
+  # @return [Mod]
+  def self.load (path)
+    json = File.read(path)
+    data = JSON.parse(json)
+    
+    id         = data['id']
+    name       = data['name']
+    author     = data['author']
+    version    = data['version']
+    mc_version = data['mc_version']
+    url        = data['url']
+    notes      = data['notes']
+    core       = data['core'] ? true : false
+    Mod.new(id, name, author, version, mc_version, url, notes, core)
+  end
 end
 
