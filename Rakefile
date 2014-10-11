@@ -12,6 +12,7 @@ CLEAN.include('*.jar')
 CLEAN.include("#{MODS_DIR}/*.zip")
 CLEAN.include("#{MODS_DIR}/*.jar")
 CLEAN.include(MODPACK_DIR)
+CLEAN.include('bin')
 
 task :default => ['download', 'package']
 
