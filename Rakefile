@@ -8,6 +8,8 @@ MODS_DIR  = 'mods'
 
 CLEAN.include('*.zip')
 CLEAN.include('*.jar')
+CLEAN.include("#{MODS_DIR}/*.zip")
+CLEAN.include("#{MODS_DIR}/*.jar")
 
 task :default => ['download', 'package']
 
