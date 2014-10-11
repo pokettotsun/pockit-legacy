@@ -1,6 +1,5 @@
 require 'rake'
 require 'rake/clean'
-require 'rake/packagetask'
 require_relative 'version'
 require_relative 'mod'
 require_relative 'utility'
@@ -8,14 +7,21 @@ require_relative 'utility'
 MODS_DIR  = 'mods'
 
 CLEAN.include('*.zip')
+CLEAN.include('*.jar')
 
 task :default => ['download', 'package']
 
 desc 'Creates the modpack package'
-Rake::PackageTask.new('pockit', Pockit::MODPACK_VERSION) do |p|
-  p.need_zip = true
-  p.package_files.include("#{MODS_DIR}/*.jar")
-  p.package_files.include("#{MODS_DIR}/*.zip")
+task :package => :download do
+  zip_file   = "Pockit-#{Pockit::MODPACK_VERSION}.zip"
+  jar_filter = "#{MODS_DIR}/*.jar"
+  zip_filter = "#{MODS_DIR}/*.zip"
+  Dir.glob(jar_filter).each do |filename|
+    sh "zip -g '#{zip_file}' '#{filename}'"
+  end
+  Dir.glob(zip_filter).each do |filename|
+    sh "zip -g '#{zip_file}' '#{filename}'"
+  end
 end
 
 desc 'Downloads the mods to include in the modpack'
