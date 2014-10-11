@@ -20,6 +20,9 @@ class Mod
   # URL of zip or jar file download
   attr_reader :url
   
+  # URL of information about the mod
+  attr_reader :website
+  
   # Additional notes about the mod, such as tweaks
   attr_reader :notes
   
@@ -27,7 +30,7 @@ class Mod
   attr_reader :core
   
   # Create a new mod reference
-  def initialize (id, name, author, version, mc_version, url, notes, core)
+  def initialize (id, name, author, version, mc_version, url, website, notes, core)
     @id         = id
     @name       = name
     @author     = author
@@ -51,9 +54,10 @@ class Mod
     version    = data['version']
     mc_version = data['mc_version']
     url        = data['url']
+    website    = data['website']
     notes      = data['notes']
     core       = data['core'] ? true : false
-    Mod.new(id, name, author, version, mc_version, url, notes, core)
+    Mod.new(id, name, author, version, mc_version, url, website, notes, core)
   end
 end
 
