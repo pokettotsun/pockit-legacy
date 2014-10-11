@@ -19,8 +19,9 @@ desc 'Creates the modpack package'
 task :package => :download do
   zip_file = "Pockit-#{Pockit::MODPACK_VERSION}.zip"
   if Dir.exist?(MODPACK_DIR)
-    sh "cd '#{MODPACK_DIR}' && zip -qrg ../modpack.jar *"
-    zip(zip_file, 'modpack.jar')
+    Dir.mkdir('bin') unless Dir.exist?('bin')
+    sh "cd '#{MODPACK_DIR}' && zip -qrg ../bin/modpack.jar *"
+    zip(zip_file, 'bin/modpack.jar')
   end
 
   jar_filter = "#{MODS_DIR}/*.jar"
