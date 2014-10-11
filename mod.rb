@@ -56,7 +56,7 @@ class Mod
     url        = data['url']
     website    = data['website']
     notes      = data['notes']
-    core       = data['core'] ? true : false
+    core       = data['core'] != 0 ? true : false
     Mod.new(id, name, author, version, mc_version, url, website, notes, core)
   end
 end
