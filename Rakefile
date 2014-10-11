@@ -16,12 +16,7 @@ task :package => :download do
   zip_file   = "Pockit-#{Pockit::MODPACK_VERSION}.zip"
   jar_filter = "#{MODS_DIR}/*.jar"
   zip_filter = "#{MODS_DIR}/*.zip"
-  Dir.glob(jar_filter).each do |filename|
-    sh "zip -g '#{zip_file}' '#{filename}'"
-  end
-  Dir.glob(zip_filter).each do |filename|
-    sh "zip -g '#{zip_file}' '#{filename}'"
-  end
+  zip(zip_file, jar_filter, zip_filter)
 end
 
 desc 'Downloads the mods to include in the modpack'

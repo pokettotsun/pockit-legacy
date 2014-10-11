@@ -40,3 +40,15 @@ def wrap_download (url, dest, &block)
   end
 end
 
+# Creates a zip file from files matching filters
+# @param zip_file [String]        Path to the zip file to create
+# @param filters  [Array<String>] Set of file filters
+# @return [null]
+def zip (zip_file, *filters)
+  filters.each do |filter|
+    Dir.glob(filter).each do |filepath|
+      system('zip', '-g', zip_file, filepath)
+    end
+  end
+end
+
