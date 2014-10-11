@@ -4,12 +4,14 @@ require_relative 'version'
 require_relative 'mod'
 require_relative 'utility'
 
-MODS_DIR = 'mods'
+MODS_DIR    = 'mods'
+MODPACK_DIR = 'modpack'
 
 CLEAN.include('*.zip')
 CLEAN.include('*.jar')
 CLEAN.include("#{MODS_DIR}/*.zip")
 CLEAN.include("#{MODS_DIR}/*.jar")
+CLEAN.include(MODPACK_DIR)
 
 task :default => ['download', 'package']
 
@@ -34,11 +36,17 @@ desc 'Download a specific mod'
 task :download_mod, [:mod_file] do |t, mod_file|
   mod_path = File.join(MODS_DIR, mod_file)
   mod = Mod.load(mod_path)
-  if http_auth
+  output_file = if http_auth
     download_auth(mod.url, MODS_DIR, ENV['http_user'], ENV['http_pass'])
   else
     download(mod.url, MODS_DIR)
   end
+  Rake::Task['extract_mod'].execute(output_file) if mod.core
+end
+
+desc 'Extracts the contents of a mod into the core mod directory'
+task :extract_mod, [:mod_file] do |t, mod_file|
+  raise 'Not implemented'
 end
 
 # Checks whether HTTP authentication is provided

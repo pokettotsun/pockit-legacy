@@ -31,13 +31,14 @@ end
 # @url [String] URL of the file
 # @dest [String] Destination directory to save the file in
 # @block Block returning the contents of the URL
-# @return [null]
+# @return [String] Path to the output file
 def wrap_download (url, dest, &block)
   filename = url_filename(url)
   filepath = "#{dest}/#{filename}"
   File.open(filepath, 'wb') do |file|
     file.write block.call(url)
   end
+  filepath
 end
 
 # Creates a zip file from files matching filters
