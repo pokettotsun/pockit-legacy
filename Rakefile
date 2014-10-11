@@ -46,7 +46,7 @@ end
 
 desc 'Extracts the contents of a mod into the core mod directory'
 task :extract_mod, [:mod_file] do |t, mod_file|
-  raise 'Not implemented'
+  sh "unzip -d '#{MODPACK_DIR}' '#{mod_file}'"
 end
 
 # Checks whether HTTP authentication is provided
