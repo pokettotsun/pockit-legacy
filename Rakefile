@@ -16,10 +16,10 @@ CLEAN.include(MODPACK_DIR)
 CLEAN.include(CORE_MODS_DIR)
 CLEAN.include('bin')
 
-task :default => ['download', 'package']
+task :default => ['download', 'modpack']
 
-desc 'Creates the modpack package'
-task :package => :download do
+desc 'Creates the client modpack package'
+task :modpack => :download do
   zip_file = "Pockit-#{Pockit::MODPACK_VERSION}.zip"
   if Dir.exist?(MODPACK_DIR)
     Dir.mkdir('bin') unless Dir.exist?('bin')
@@ -27,9 +27,11 @@ task :package => :download do
     zip(zip_file, 'bin/modpack.jar')
   end
 
-  jar_filter = "#{MODS_DIR}/*.jar"
-  zip_filter = "#{MODS_DIR}/*.zip"
-  zip(zip_file, jar_filter, zip_filter)
+  mods_jar_filter = "#{MODS_DIR}/*.jar"
+  mods_zip_filter = "#{MODS_DIR}/*.zip"
+  core_jar_filter = "#{CORE_MODS_DIR}/*.jar"
+  core_zip_filter = "#{CORE_MODS_DIR}/*.zip"
+  zip(zip_file, mods_jar_filter, mods_zip_filter, core_jar_filter, core_zip_filter)
 end
 
 desc 'Downloads the mods to include in the modpack'
@@ -45,10 +47,11 @@ desc 'Download a specific mod'
 task :download_mod, [:mod_file] do |t, mod_file|
   mod_path = File.join(MODS_DIR, mod_file)
   mod = Mod.load(mod_path)
+  mod_dir = mod.coremod? ? CORE_MODS_DIR : MODS_DIR
   output_file = if http_auth
-    download_auth(mod.url, MODS_DIR, ENV['http_user'], ENV['http_pass'])
+    download_auth(mod.url, mod_dir, ENV['http_user'], ENV['http_pass'])
   else
-    download(mod.url, MODS_DIR)
+    download(mod.url, mod_dir)
   end
   Rake::Task['extract_mod'].execute(output_file) if mod.jar_patch?
 end
