@@ -4,14 +4,16 @@ require_relative 'version'
 require_relative 'mod'
 require_relative 'utility'
 
-MODS_DIR    = 'mods'
-MODPACK_DIR = 'modpack'
+MODS_DIR      = 'mods'
+CORE_MODS_DIR = 'coremods'
+MODPACK_DIR   = 'modpack'
 
 CLEAN.include('*.zip')
 CLEAN.include('*.jar')
 CLEAN.include("#{MODS_DIR}/*.zip")
 CLEAN.include("#{MODS_DIR}/*.jar")
 CLEAN.include(MODPACK_DIR)
+CLEAN.include(CORE_MODS_DIR)
 CLEAN.include('bin')
 
 task :default => ['download', 'package']
@@ -48,7 +50,7 @@ task :download_mod, [:mod_file] do |t, mod_file|
   else
     download(mod.url, MODS_DIR)
   end
-  Rake::Task['extract_mod'].execute(output_file) if mod.core
+  Rake::Task['extract_mod'].execute(output_file) if mod.jar_patch?
 end
 
 desc 'Extracts the contents of a mod into the core mod directory'

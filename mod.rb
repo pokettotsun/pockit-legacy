@@ -26,11 +26,21 @@ class Mod
   # Additional notes about the mod, such as tweaks
   attr_reader :notes
   
+  # Indicates the mod's type (:normal, :core, :jar)
+  attr_reader :type
+  
   # Indicates whether the mod is a coremod
-  attr_reader :core
+  def coremod?
+    return @type == :core
+  end
+  
+  # Indicates whether the mod is a patch to minecraft.jar
+  def jar_patch?
+    return @type == :jar
+  end
   
   # Create a new mod reference
-  def initialize (id, name, author, version, mc_version, url, website, notes, core)
+  def initialize (id, name, author, version, mc_version, url, website, notes, type)
     @id         = id
     @name       = name
     @author     = author
@@ -38,7 +48,7 @@ class Mod
     @mc_version = mc_version
     @url        = url
     @notes      = notes
-    @core       = core
+    @core       = type
   end
   
   # Loads mod information from a file
@@ -56,8 +66,15 @@ class Mod
     url        = data['url']
     website    = data['website']
     notes      = data['notes']
-    core       = data['core'] != 0 ? true : false
-    Mod.new(id, name, author, version, mc_version, url, website, notes, core)
+    type_str   = data['type']
+    type = if type_str == 'core'
+      :core
+    elsif type_str == 'jar'
+      :jar
+    else
+      :normal
+    end
+    Mod.new(id, name, author, version, mc_version, url, website, notes, type)
   end
 end
 
