@@ -48,7 +48,7 @@ class Mod
     @mc_version = mc_version
     @url        = url
     @notes      = notes
-    @core       = type
+    @type       = type
   end
   
   # Loads mod information from a file
