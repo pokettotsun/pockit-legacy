@@ -1,4 +1,5 @@
 require 'json'
+require_relative 'mod'
 
 module Pockit
   
@@ -12,6 +13,32 @@ module Pockit
     def initialize (mc_version, mod_ids)
       @mc_version = mc_version
       @mod_ids    = mod_ids
+    end
+    
+    # Number of mods in the list
+    # @return [Fixnum]
+    def length
+      @mod_ids.length
+    end
+    alias size length
+    
+    # Operates on each mod in the list
+    def each (&block)
+      @mod_ids.each do |id|
+        if path = find_mod(id)
+          mod = Pockit::Mod.load(path)
+          block.call(mod)
+        else
+          puts "WARNING: Mod '#{id}' compatible with #{@mc_version} not found"
+        end
+      end
+    end
+    
+    # Attempts to find a mod compatible with the pre-set Minecraft version
+    # @param id [String] Mod ID
+    # @return [String, null] Path to the mod file or +nil+ if the mod wasn't found
+    def find_mod (id)
+      raise 'Not implemented'
     end
     
     # Loads modlist information from a file
