@@ -67,12 +67,10 @@ class Mod
     website    = data['website']
     notes      = data['notes']
     type_str   = data['type']
-    type = if type_str == 'core'
-      :core
-    elsif type_str == 'jar'
-      :jar
-    else
-      :normal
+    type = case type_str
+    when 'core' then :core
+    when 'jar'  then :jar
+    else :normal
     end
     Mod.new(id, name, author, version, mc_version, url, website, notes, type)
   end
