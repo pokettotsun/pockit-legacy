@@ -56,7 +56,7 @@ module Pockit
     
     # Loads mod information from a file
     # @param path [String] Path to the file to load from
-    # @return [Mod]
+    # @return [Pockit::Mod]
     def self.load (path)
       json = File.read(path)
       data = JSON.parse(json)
@@ -75,7 +75,7 @@ module Pockit
       when 'jar'  then :jar
       else :normal
       end
-      Mod.new(id, name, author, version, mc_version, url, website, notes, type)
+      Pockit::Mod.new(id, name, author, version, mc_version, url, website, notes, type)
     end
 
   end
