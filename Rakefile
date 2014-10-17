@@ -6,7 +6,7 @@ require_relative 'utility'
 
 MODS_DIR       = 'mods'
 CORE_MODS_DIR  = 'coremods'
-MODPACK_DIR    = 'modpack'
+JAR_PATCH_DIR  = 'jar'
 SERVER_ZIP     = 'http://code.mikedevblog.com:8080/repository/mc_mods/net/minecraftforge/minecraft-server-forge/1.7.10/minecraft-server-forge-1.7.10.zip'
 SERVER_PKG_DIR = 'server-pkg'
 
@@ -14,7 +14,7 @@ CLEAN.include('*.zip')
 CLEAN.include('*.jar')
 CLEAN.include("#{MODS_DIR}/*.zip")
 CLEAN.include("#{MODS_DIR}/*.jar")
-CLEAN.include(MODPACK_DIR)
+CLEAN.include(JAR_PATCH_DIR)
 CLEAN.include(CORE_MODS_DIR)
 CLEAN.include(SERVER_PKG_DIR)
 CLEAN.include('bin')
@@ -24,9 +24,9 @@ task :default => ['download', 'modpack', 'server']
 desc 'Creates the client modpack package'
 task :modpack => :download do
   zip_file = "Pockit-#{Pockit::MODPACK_VERSION}.zip"
-  if Dir.exist?(MODPACK_DIR)
+  if Dir.exist?(JAR_PATCH_DIR)
     Dir.mkdir('bin') unless Dir.exist?('bin')
-    sh "cd '#{MODPACK_DIR}' && zip -qr ../bin/modpack.jar *"
+    sh "cd '#{JAR_PATCH_DIR}' && zip -qr ../bin/modpack.jar *"
     zip(zip_file, 'bin/modpack.jar')
   end
 
@@ -79,7 +79,7 @@ end
 
 desc 'Extracts the contents of a mod into the core mod directory'
 task :extract_mod, [:mod_file] do |t, mod_file|
-  sh "unzip -qo -d '#{MODPACK_DIR}' '#{mod_file}'"
+  sh "unzip -qo -d '#{JAR_PATCH_DIR}' '#{mod_file}'"
 end
 
 # Checks whether HTTP authentication is provided
