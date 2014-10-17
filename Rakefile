@@ -1,8 +1,8 @@
 require 'rake'
 require 'rake/clean'
 require_relative 'version'
-require_relative 'mod'
-require_relative 'utility'
+require_relative 'lib/mod'
+require_relative 'lib/utility'
 
 MODS_DIR       = 'mods'
 CORE_MODS_DIR  = 'coremods'
