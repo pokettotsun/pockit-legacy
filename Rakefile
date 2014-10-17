@@ -1,8 +1,8 @@
 require 'rake'
 require 'rake/clean'
 require_relative 'version'
-require_relative 'lib/mod'
-require_relative 'lib/utility'
+require_relative 'lib/pockit/mod'
+require_relative 'lib/pockit/utility'
 
 MODS_DIR       = 'mods'
 CORE_MODS_DIR  = 'coremods'
@@ -27,14 +27,14 @@ task :modpack => :download do
   if Dir.exist?(JAR_PATCH_DIR)
     Dir.mkdir('bin') unless Dir.exist?('bin')
     sh "cd '#{JAR_PATCH_DIR}' && zip -qr ../bin/modpack.jar *"
-    zip(zip_file, 'bin/modpack.jar')
+    Pockit::Utility.zip(zip_file, 'bin/modpack.jar')
   end
 
   mods_jar_filter = "#{MODS_DIR}/*.jar"
   mods_zip_filter = "#{MODS_DIR}/*.zip"
   core_jar_filter = "#{CORE_MODS_DIR}/*.jar"
   core_zip_filter = "#{CORE_MODS_DIR}/*.zip"
-  zip(zip_file, mods_jar_filter, mods_zip_filter, core_jar_filter, core_zip_filter)
+  Pockit::Utility.zip(zip_file, mods_jar_filter, mods_zip_filter, core_jar_filter, core_zip_filter)
 end
 
 desc 'Creates the server package'
@@ -42,9 +42,9 @@ task :server => :download do
   zip_file = "Pockit-server-#{Pockit::MODPACK_VERSION}.zip"
   Dir.mkdir(SERVER_PKG_DIR) unless Dir.exist?(SERVER_PKG_DIR)
   server_artifact = if http_auth
-    download_auth(SERVER_ZIP, '.', ENV['http_user'], ENV['http_pass'])
+    Pockit::Utility.download_auth(SERVER_ZIP, '.', ENV['http_user'], ENV['http_pass'])
   else
-    download(SERVER_ZIP, '.')
+    Pockit::Utility.download(SERVER_ZIP, '.')
   end
   sh "unzip -qo -d #{SERVER_PKG_DIR} #{server_artifact}"
   sh "cd #{SERVER_PKG_DIR} && zip -r ../#{zip_file} *"
@@ -52,7 +52,7 @@ task :server => :download do
   mods_zip_filter = "#{MODS_DIR}/*.zip"
   core_jar_filter = "#{CORE_MODS_DIR}/*.jar"
   core_zip_filter = "#{CORE_MODS_DIR}/*.zip"
-  zip(zip_file, mods_jar_filter, mods_zip_filter, core_jar_filter, core_zip_filter)
+  Pockit::Utility.zip(zip_file, mods_jar_filter, mods_zip_filter, core_jar_filter, core_zip_filter)
 end
 
 desc 'Downloads the mods to include in the modpack'
@@ -70,9 +70,9 @@ task :download_mod, [:mod_file] do |t, mod_file|
   mod = Mod.load(mod_path)
   mod_dir = mod.coremod? ? CORE_MODS_DIR : MODS_DIR
   output_file = if http_auth
-    download_auth(mod.url, mod_dir, ENV['http_user'], ENV['http_pass'])
+    Pockit::Utility.download_auth(mod.url, mod_dir, ENV['http_user'], ENV['http_pass'])
   else
-    download(mod.url, mod_dir)
+    Pockit::Utility.download(mod.url, mod_dir)
   end
   Rake::Task['extract_mod'].execute(output_file) if mod.jar_patch?
 end
