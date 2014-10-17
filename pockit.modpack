@@ -5,5 +5,7 @@
 	"mc_version"      : "1.7.10",
 	"author"          : "bluepixelmike",
 	"website"         : "",
+	"server_contents" : "pockit-server.modlist",
+	"client_contents" : "pockit-client.modlist"
 }
 
