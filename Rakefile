@@ -50,22 +50,29 @@ def package_client (modpack)
   
   # Create modpack.jar to patch minecraft.jar
   if !jar_patches.empty?
-    jar_package = Pockit::Package.new(JAR_PATCH_CLIENT_PACKAGE)
-    puts "Creating client modpack.jar"
-    
-    # Unzip all patches
-    jar_patches.each do |mod|
-      path = mod_download_location(mod)
-      sh "unzip -qq -o -d '#{JAR_PATCH_CLIENT_DIR}' '#{path}'"
-    end
-    
-    # Create the patch jar
-    jar_package.add("#{JAR_PATCH_CLIENT_DIR}/**/*")
-    jar_package.create
+    package_client_jar_patch(jar_patches)
     package.add(JAR_PATCH_CLIENT_PACKAGE, JAR_PATCH_CLIENT_DIR)
   end
   
   puts "Creating client package #{package_file}"
+  package.create
+end
+
+# Creates the modpack.jar needed to patch minecraft.jar for the client
+# @param patches [Array<Pockit::Mod>] Set of mod patches
+# @return [null]
+def package_client_jar_patch (patches)
+  package = Pockit::Package.new(JAR_PATCH_CLIENT_PACKAGE)
+  puts "Creating client modpack.jar"
+  
+  # Unzip all patches
+  patches.each do |mod|
+    path = mod_download_location(mod)
+    system('unzip', '-qq', '-o', '-d', JAR_PATCH_CLIENT_DIR, path) or raise "unzip #{path} failed"
+  end
+  
+  # Create the patch jar
+  package.add("#{JAR_PATCH_CLIENT_DIR}/**/*")
   package.create
 end
 
