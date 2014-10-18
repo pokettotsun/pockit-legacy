@@ -85,7 +85,7 @@ module Pockit
       data = JSON.parse(json)
       
       mod_ids = data['mods'].to_a
-      Pockit::Modpack.new(mc_version, mod_ids)
+      Pockit::Modlist.new(mc_version, mod_ids)
     end
     
     private :find_mod, :quick_find_mod, :exhaustive_find_mod
