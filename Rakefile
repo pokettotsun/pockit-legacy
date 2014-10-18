@@ -8,15 +8,17 @@ require_relative 'lib/pockit/utility'
 PACKAGE_DIRECTORY      = 'pkg'
 PACKAGE_MODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'mods')
 
-desc 'Downloads all mods in a list'
-task :download, [:modlist] do |t, modlist|
-  list = modlist.is_a?(Pockit::Modlist) ? modlist : Pockit::Modlist.load(modlist)
-  list.each { |mod| Rake::Task['download_mod'].execute(mod) }
+# Downloads all mods in a list
+# @param modlist [Pockit::Modlist] List of mods to download
+# @return [null]
+def download_list (modlist)
+  modlist.each { |mod| Rake::Task['download_mod'].execute(mod) }
 end
 
-desc 'Downloads a single mod'
-task :download_mod, [:mod] do |t, mod|
-  info = mod.is_a?(Pockit::Mod) ? mod : Pockit::Mod.load(mod)
+# Downloads a single mod
+# @param mod [Pockit::Mod] Mod to download
+# @return [null]
+def download_mod (mod)
   file = Pockit::Utility.url_filename(mod.url)
   dest = File.join(PACKAGE_MODS_DIRECTORY, file)
   
