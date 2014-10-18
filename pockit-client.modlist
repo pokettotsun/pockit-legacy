@@ -2,6 +2,7 @@
 	"mods" = [
 		"forge",
 		"ars-magica2",
-		"natura"
+		"natura",
+		"biomesoplenty"
 	]
 }
