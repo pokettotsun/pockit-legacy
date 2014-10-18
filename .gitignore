@@ -1,5 +1,4 @@
 *.jar
 *.zip
-modpack/
-bin/
+pkg/
 
