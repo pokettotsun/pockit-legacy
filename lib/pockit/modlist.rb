@@ -88,6 +88,8 @@ module Pockit
       Pockit::Modpack.new(mc_version, mod_ids)
     end
     
+    private :find_mod, :quick_find_mod, :exhaustive_find_mod
+    
   end
   
 end
