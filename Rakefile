@@ -156,7 +156,9 @@ end
 # @return [null]
 def download_mod (mod)
   dest = mod_download_location(mod)
-  dir  = File.dirname(dest)
+  return if File.exist?(dest) # Already downloaded, don't need to download again
+  
+  dir = File.dirname(dest)
   FileUtils.mkpath(dir) unless Dir.exist?(dir)
   
   if http_auth
