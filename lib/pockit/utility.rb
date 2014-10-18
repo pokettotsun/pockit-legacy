@@ -60,4 +60,3 @@ module Pockit
   end
 
 end
-

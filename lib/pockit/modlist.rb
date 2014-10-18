@@ -93,4 +93,3 @@ module Pockit
   end
   
 end
-
