@@ -85,7 +85,7 @@ def package_client_jar_patch (patches)
   end
   
   # Create the patch jar
-  package.add("#{JAR_PATCH_CLIENT_DIR}/**/*")
+  package.add("#{JAR_PATCH_CLIENT_DIR}/**/*", JAR_PATCH_CLIENT_DIR)
   package.create
 end
 
@@ -130,7 +130,7 @@ def package_server_jar_patch (patches)
   end
   
   # Create the patch jar
-  package.add("#{JAR_PATCH_SERVER_DIR}/**/*")
+  package.add("#{JAR_PATCH_SERVER_DIR}/**/*", JAR_PATCH_SERVER_DIR)
   package.create
 end
 
