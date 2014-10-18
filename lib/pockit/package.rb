@@ -30,7 +30,7 @@ module Pockit
       progress = 0
       files.zip(sizes).each do |file, size|
         percent     = (progress / size.to_f * 100).round(0)
-        percent_str = sptrinf('%3d', percent)
+        percent_str = sprintf('%3d', percent)
         puts "[#{percent_str}%] #{file}"
         system('zip', *zip_args, file) or raise 'zip failed'
         progress += size
