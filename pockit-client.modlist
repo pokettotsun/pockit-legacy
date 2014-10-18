@@ -9,6 +9,7 @@
 		"ichun-util",
 		"hats",
 		"hat-stand",
-		"mantle"
+		"mantle",
+		"tinkers-construct"
 	]
 }
