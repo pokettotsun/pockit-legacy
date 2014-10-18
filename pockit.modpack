@@ -3,7 +3,7 @@
 	"description"     : "Think of something witty to put here.",
 	"modpack_version" : "0.1.0.0",
 	"mc_version"      : "1.7.10",
-	"author"          : "bluepixelmike",
+	"author"          : ["bluepixelmike", "pokettotsun"],
 	"website"         : "",
 	"server_contents" : "pockit-server.modlist",
 	"client_contents" : "pockit-client.modlist"
