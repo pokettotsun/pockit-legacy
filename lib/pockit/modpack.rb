@@ -53,7 +53,7 @@ module Pockit
       
       name        = data['name']
       description = data['description']
-      version     = data['version']
+      version     = data['modpack_version']
       mc_version  = data['mc_version']
       author      = data['author']
       website     = data['website']
