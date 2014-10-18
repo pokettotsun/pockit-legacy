@@ -1,6 +1,7 @@
 {
 	"mods" = [
 		"forge",
-		"ars-magica2"
+		"ars-magica2",
+		"natura"
 	]
 }
