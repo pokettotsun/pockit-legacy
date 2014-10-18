@@ -16,15 +16,24 @@ CLEAN.include('*.zip')
 CLEAN.include('*.jar')
 CLEAN.include(PACKAGE_DIRECTORY)
 
-task :default => ['client']
+task :default => ['client', 'server']
 
 desc 'Builds the client modpack'
 task :client do
   modpack = find_modpack
-  puts "Building #{modpack.name} v#{modpack.version} for Minecraft #{modpack.mc_version}"
+  puts "Building #{modpack.name} v#{modpack.version} client for Minecraft #{modpack.mc_version}"
   
   download_list(modpack.client_mods)
   package_client(modpack)
+end
+
+desc 'Builds the server modpack'
+task :server do
+  modpack = find_modpack
+  puts "Building #{modpack.name} v#{modpack.version} server for Minecraft #{modpack.mc_version}"
+  
+  download_list(modpack.server_mods)
+  package_server(modpack)
 end
 
 # Attempts to find a modpack to build
@@ -77,6 +86,51 @@ def package_client_jar_patch (patches)
   
   # Create the patch jar
   package.add("#{JAR_PATCH_CLIENT_DIR}/**/*")
+  package.create
+end
+
+# Packages the files needed for the server
+# @param modpack [Pockit::Modpack]
+def package_server (modpack)
+  package_file = "#{modpack.name}-#{modpack.version}_#{modpack.mc_version}-server.zip"
+  
+  jar_patches = []
+  package     = Pockit::Package.new(package_file)
+  modpack.server_mods.each do |mod|
+    if mod.jar_patch?
+      # Jar patch has special process
+      jar_patches << mod
+    else
+      path = mod_download_location(mod)
+      package.add(path, PACKAGE_DIRECTORY)
+    end
+  end
+  
+  # Create modpack.jar to patch minecraft.jar
+  if !jar_patches.empty?
+    package_server_jar_patch(jar_patches)
+    package.add(JAR_PATCH_SERVER_PACKAGE, JAR_PATCH_SERVER_DIR)
+  end
+  
+  puts "Creating server package #{package_file}"
+  package.create
+end
+
+# Creates the modpack.jar needed to patch minecraft.jar for the server
+# @param patches [Array<Pockit::Mod>] Set of mod patches
+# @return [null]
+def package_server_jar_patch (patches)
+  package = Pockit::Package.new(JAR_PATCH_SERVER_PACKAGE)
+  puts "Creating server modpack.jar"
+  
+  # Unzip all patches
+  patches.each do |mod|
+    path = mod_download_location(mod)
+    system('unzip', '-qq', '-o', '-d', JAR_PATCH_SERVER_DIR, path) or raise "unzip #{path} failed"
+  end
+  
+  # Create the patch jar
+  package.add("#{JAR_PATCH_SERVER_DIR}/**/*")
   package.create
 end
 
