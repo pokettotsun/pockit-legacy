@@ -48,7 +48,7 @@ end
 def download_list (modlist)
   puts 'Downloading mods'
   count  = modlist.length
-  done   = 0
+  done   = 1
   length = count.to_s.length * 2 + 1 # count size, /, done size
   format = "%#{length}s"
   modlist.each do |mod|
