@@ -46,15 +46,16 @@ end
 # @param modlist [Pockit::Modlist] List of mods to download
 # @return [null]
 def download_list (modlist)
+  puts 'Downloading mods'
   count  = modlist.length
   done   = 0
   length = count.to_s.length * 2 + 1 # count size, /, done size
-  format = "%#{length}d"
+  format = "%#{length}s"
   modlist.each do |mod|
-    progress = sprintf(format, "#{count}/#{done}")
+    progress = sprintf(format, "#{done}/#{count}")
     puts "[#{progress}] #{mod.name}: #{mod.url}"
     download_mod(mod)
-    count += 1
+    done += 1
   end
 end
 
@@ -67,9 +68,9 @@ def download_mod (mod)
   FileUtils.mkpath(dir) unless Dir.exist?(dir)
   
   if http_auth
-    Pockit::Utility.download_auth(mod.url, dest, ENV['http_user'], ENV['http_pass'])
+    Pockit::Utility.download_auth(mod.url, dir, ENV['http_user'], ENV['http_pass'])
   else
-    Pockit::Utility.download(mod.url, dest)
+    Pockit::Utility.download(mod.url, dir)
   end
 end
 
