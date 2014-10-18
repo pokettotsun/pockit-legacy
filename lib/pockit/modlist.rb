@@ -40,10 +40,23 @@ module Pockit
     def find_mod (id)
       version_path = File.join('mods', @mc_version)
       if Dir.exist?(version_path)
-        exhaustive_find_mod(version_path, id)
+        quick_find_mod(version_path, id) or exhaustive_find_mod(version_path, id)
       else # Version directory doesn't exist
         nil
       end
+    end
+    
+    # Attempts to quickly find a mod
+    # @param path [String] Path to search
+    # @param id   [String] Mod ID
+    # @return [String, null] Path to the mod file or +nil+ if the mod wasn't found
+    def quick_find_mod (path, id)
+      filter = File.join(path, "#{id}_*.mod") # Match .mod files named by ID followed with version
+      mod_entries = Dir.glob(filter).select do |entry|
+        mod = Pockit::Mod.load(entry)
+        mod.id == id
+      end
+      mod_entries.sort.last # Highest version of nil if empty
     end
     
     # Searches all mod files
