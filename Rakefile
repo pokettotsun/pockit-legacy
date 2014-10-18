@@ -36,8 +36,9 @@ def package_client (modpack)
   
   package = Pockit::Package.new(package_file)
   modpack.client_mods.each do |mod|
-    path = mod_download_location(mod)
-    package.add(path)
+    path  = mod_download_location(mod)
+    strip = mod.jar_patch? ? TEMP_DIRECTORY : PACKAGE_DIRECTORY
+    package.add(path, strip)
   end
   package.create
 end
