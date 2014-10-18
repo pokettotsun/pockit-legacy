@@ -25,8 +25,9 @@ module Pockit
     end
     
     # Creates the package
+    # @param verbose [Boolean] Flag indicating whether verbosity is turned on
     # @return [null]
-    def create
+    def create (verbose = true)
       return if @contents.length <= 0
       File.delete(@target) if File.exist?(@target)
       
@@ -39,9 +40,11 @@ module Pockit
       total = total.to_f
       files.zip(sizes).each do |entry, size|
         file, strip = *entry
-        percent     = (progress / total * 100).round(0)
-        percent_str = sprintf('%3d', percent)
-        puts "[#{percent_str}%] #{file}"
+        if verbose
+          percent     = (progress / total * 100).round(0)
+          percent_str = sprintf('%3d', percent)
+          puts "[#{percent_str}%] #{file}"
+        end
         
         pid = if strip and strip.length > 0
           up_str   = '../' * strip.count('/')
