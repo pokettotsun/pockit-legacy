@@ -1,8 +1,6 @@
 require 'rake'
 require 'rake/clean'
-require_relative 'version'
 require_relative 'lib/pockit/modpack'
-require_relative 'lib/pockit/modlist'
 require_relative 'lib/pockit/package'
 require_relative 'lib/pockit/utility'
 
