@@ -12,6 +12,10 @@ JAR_PATCH_CLIENT_PACKAGE   = File.join(JAR_PATCH_CLIENT_DIR, 'modpack.jar')
 JAR_PATCH_SERVER_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_server_jar')
 JAR_PATCH_SERVER_PACKAGE   = File.join(JAR_PATCH_SERVER_DIR, 'modpack.jar')
 
+CLEAN.include('*.zip')
+CLEAN.include('*.jar')
+CLEAN.include(PACKAGE_DIRECTORY)
+
 task :default => ['client']
 
 desc 'Builds the client modpack'
