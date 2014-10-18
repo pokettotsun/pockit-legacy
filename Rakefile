@@ -5,8 +5,10 @@ require_relative 'lib/pockit/modpack'
 require_relative 'lib/pockit/modlist'
 require_relative 'lib/pockit/utility'
 
-PACKAGE_DIRECTORY      = 'pkg'
-PACKAGE_MODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'mods')
+TEMP_DIRECTORY             = 'tmp'
+PACKAGE_DIRECTORY          = 'pkg'
+PACKAGE_MODS_DIRECTORY     = File.join(PACKAGE_DIRECTORY, 'mods')
+PACKAGE_COREMODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'coremods')
 
 # Downloads all mods in a list
 # @param modlist [Pockit::Modlist] List of mods to download
@@ -20,7 +22,13 @@ end
 # @return [null]
 def download_mod (mod)
   file = Pockit::Utility.url_filename(mod.url)
-  dest = File.join(PACKAGE_MODS_DIRECTORY, file)
+  dir  = case mod.type
+  when :core then PACKAGE_COREMODS_DIRECTORY
+  when :jar  then TEMP_DIRECTORY
+  else            PACKAGE_MODS_DIRECTORY
+  end
+  dest = File.join(dir, file)
+  FileUtils.mkpath(dir) unless Dir.exist?(dir)
   
   if http_auth
     Pockit::Utility.download_auth(mod.url, dest, ENV['http_user'], ENV['http_pass'])
