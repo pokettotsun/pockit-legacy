@@ -14,7 +14,16 @@ PACKAGE_COREMODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'coremods')
 # @param modlist [Pockit::Modlist] List of mods to download
 # @return [null]
 def download_list (modlist)
-  modlist.each { |mod| Rake::Task['download_mod'].execute(mod) }
+  count  = modlist.length
+  done   = 0
+  length = count.to_s.length * 2 + 1 # count size, /, done size
+  format = "%#{length}d"
+  modlist.each do |mod|
+    progress = sprintf(format, "#{count}/#{done}")
+    puts "[#{progress}] #{mod.name}: #{mod.url}"
+    download_mod(mod)
+    count += 1
+  end
 end
 
 # Downloads a single mod
