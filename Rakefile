@@ -4,10 +4,13 @@ require_relative 'lib/pockit/modpack'
 require_relative 'lib/pockit/package'
 require_relative 'lib/pockit/utility'
 
-TEMP_DIRECTORY             = 'tmp'
 PACKAGE_DIRECTORY          = 'pkg'
 PACKAGE_MODS_DIRECTORY     = File.join(PACKAGE_DIRECTORY, 'mods')
 PACKAGE_COREMODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'coremods')
+JAR_PATCH_CLIENT_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_client_jar')
+JAR_PATCH_CLIENT_PACKAGE   = File.join(JAR_PATCH_CLIENT_DIR, 'modpack.jar')
+JAR_PATCH_SERVER_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_server_jar')
+JAR_PATCH_SERVER_PACKAGE   = File.join(JAR_PATCH_SERVER_DIR, 'modpack.jar')
 
 task :default => ['client']
 
@@ -32,14 +35,37 @@ end
 # @param modpack [Pockit::Modpack]
 def package_client (modpack)
   package_file = "#{modpack.name}-#{modpack.version}_#{modpack.mc_version}-client.zip"
-  puts "Creating client package #{package_file}"
   
-  package = Pockit::Package.new(package_file)
+  jar_patches = []
+  package     = Pockit::Package.new(package_file)
   modpack.client_mods.each do |mod|
-    path  = mod_download_location(mod)
-    strip = mod.jar_patch? ? TEMP_DIRECTORY : PACKAGE_DIRECTORY
-    package.add(path, strip)
+    if mod.jar_patch?
+      # Jar patch has special process
+      jar_patches << mod
+    else
+      path = mod_download_location(mod)
+      package.add(path, PACKAGE_DIRECTORY)
+    end
   end
+  
+  # Create modpack.jar to patch minecraft.jar
+  if !jar_patches.empty?
+    jar_package = Pockit::Package.new(JAR_PATCH_CLIENT_PACKAGE)
+    puts "Creating client modpack.jar"
+    
+    # Unzip all patches
+    jar_patches.each do |mod|
+      path = mod_download_location(mod)
+      sh "unzip -qq -o -d '#{JAR_PATCH_CLIENT_DIR}' '#{path}'"
+    end
+    
+    # Create the patch jar
+    jar_package.add("#{JAR_PATCH_CLIENT_DIR}/**/*")
+    jar_package.create
+    package.add(JAR_PATCH_CLIENT_PACKAGE, JAR_PATCH_CLIENT_DIR)
+  end
+  
+  puts "Creating client package #{package_file}"
   package.create
 end
 
@@ -82,7 +108,6 @@ def mod_download_location (mod)
   file = Pockit::Utility.url_filename(mod.url)
   dir  = case mod.type
   when :core then PACKAGE_COREMODS_DIRECTORY
-  when :jar  then TEMP_DIRECTORY
   else            PACKAGE_MODS_DIRECTORY
   end
   File.join(dir, file)
