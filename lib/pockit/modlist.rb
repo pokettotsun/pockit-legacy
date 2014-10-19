@@ -73,7 +73,8 @@ module Pockit
           false
         end
       end
-      mod_entries.sort.last # Highest version or nil if empty
+      found = mod_entries.sort.last # Highest version or nil if empty
+      found ? File.join(path, found) : nil
     end
     
     # Loads modlist information from a file
