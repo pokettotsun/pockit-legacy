@@ -42,6 +42,11 @@ module Pockit
       return @type == :jar
     end
     
+    # Indicates whether the mod contains just content (configuration, images, sounds)
+    def content?
+      return @type == :content
+    end
+    
     # Create a new mod reference
     def initialize (id, name, author, version, mc_version, url, website, notes, type)
       @id         = id
@@ -71,9 +76,10 @@ module Pockit
       notes      = data['notes']
       type_str   = data['type']
       type = case type_str
-      when 'core' then :core
-      when 'jar'  then :jar
-      else :normal
+      when 'core'    then :core
+      when 'jar'     then :jar
+      when 'content' then :content
+      else                :normal
       end
       Pockit::Mod.new(id, name, author, version, mc_version, url, website, notes, type)
     end
