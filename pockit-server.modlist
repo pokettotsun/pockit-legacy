@@ -8,7 +8,11 @@
 		"flower-tea",
 		"ichun-util",
 		"hats",
-		"hat-stand"
+		"hat-stand",
+		"mantle",
+		"tinkers-construct",
+		"extra-tic",
+		"tic-tooltips"
 	]
 }
 
