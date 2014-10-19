@@ -1,6 +1,8 @@
 {
 	"mods": [
 		"minecraft-server-forge",
+		"code-chicken-core",
+		"nei",
 		"ars-magica2",	
 		"natura",
 		"biomesoplenty",
