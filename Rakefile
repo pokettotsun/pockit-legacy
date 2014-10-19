@@ -4,13 +4,15 @@ require_relative 'lib/pockit/modpack'
 require_relative 'lib/pockit/package'
 require_relative 'lib/pockit/utility'
 
-PACKAGE_DIRECTORY          = 'pkg'
-PACKAGE_MODS_DIRECTORY     = File.join(PACKAGE_DIRECTORY, 'mods')
-PACKAGE_COREMODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'coremods')
-JAR_PATCH_CLIENT_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_client_jar')
-JAR_PATCH_CLIENT_PACKAGE   = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
-JAR_PATCH_SERVER_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_server_jar')
-JAR_PATCH_SERVER_PACKAGE   = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
+PACKAGE_DIRECTORY           = 'pkg'
+PACKAGE_MODS_DIRECTORY      = File.join(PACKAGE_DIRECTORY, 'mods')
+PACKAGE_COREMODS_DIRECTORY  = File.join(PACKAGE_DIRECTORY, 'coremod')
+JAR_PATCH_CLIENT_DIR        = File.join(PACKAGE_DIRECTORY, 'modpack_client_jar')
+JAR_PATCH_CLIENT_PACKAGE    = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
+JAR_PATCH_SERVER_DIR        = File.join(PACKAGE_DIRECTORY, 'modpack_server_jar')
+JAR_PATCH_SERVER_PACKAGE    = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
+LINUX_SERVER_START_SCRIPT   = 'start.sh'
+WINDOWS_SERVER_START_SCRIPT = 'start.bat'
 
 CLEAN.include('*.zip')
 CLEAN.include('*.jar')
@@ -157,6 +159,10 @@ def package_server (modpack)
       done += 1
     end
   end
+  
+  # Add startup scripts
+  package.add(LINUX_SERVER_START_SCRIPT)
+  package.add(WINDOWS_SERVER_START_SCRIPT)
   
   puts "Creating server package #{package_file}"
   package.create
