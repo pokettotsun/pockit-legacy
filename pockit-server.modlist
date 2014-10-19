@@ -1,6 +1,6 @@
 {
 	"mods": [
-		"forge",
+		"minecraft-server-forge",
 		"ars-magica2",	
 		"natura",
 		"biomesoplenty",
