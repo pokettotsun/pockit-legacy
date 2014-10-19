@@ -8,9 +8,9 @@ PACKAGE_DIRECTORY          = 'pkg'
 PACKAGE_MODS_DIRECTORY     = File.join(PACKAGE_DIRECTORY, 'mods')
 PACKAGE_COREMODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'coremods')
 JAR_PATCH_CLIENT_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_client_jar')
-JAR_PATCH_CLIENT_PACKAGE   = File.join(JAR_PATCH_CLIENT_DIR, 'modpack.jar')
+JAR_PATCH_CLIENT_PACKAGE   = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
 JAR_PATCH_SERVER_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_server_jar')
-JAR_PATCH_SERVER_PACKAGE   = File.join(JAR_PATCH_SERVER_DIR, 'modpack.jar')
+JAR_PATCH_SERVER_PACKAGE   = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
 
 CLEAN.include('*.zip')
 CLEAN.include('*.jar')
@@ -64,7 +64,7 @@ def package_client (modpack)
   # Create modpack.jar to patch minecraft.jar
   if !jar_patches.empty?
     package_client_jar_patch(jar_patches)
-    package.add(JAR_PATCH_CLIENT_PACKAGE, JAR_PATCH_CLIENT_DIR)
+    package.add(JAR_PATCH_CLIENT_PACKAGE, PACKAGE_DIRECTORY)
   end
   
   puts "Creating client package #{package_file}"
@@ -75,8 +75,8 @@ end
 # @param patches [Array<Pockit::Mod>] Set of mod patches
 # @return [null]
 def package_client_jar_patch (patches)
-  package = Pockit::Package.new(JAR_PATCH_CLIENT_PACKAGE)
   puts "Creating client modpack.jar"
+  package = Pockit::Package.new(JAR_PATCH_CLIENT_PACKAGE)
   
   # Unzip all patches
   patches.each do |mod|
@@ -109,7 +109,7 @@ def package_server (modpack)
   # Create modpack.jar to patch minecraft.jar
   if !jar_patches.empty?
     package_server_jar_patch(jar_patches)
-    package.add(JAR_PATCH_SERVER_PACKAGE, JAR_PATCH_SERVER_DIR)
+    package.add(JAR_PATCH_SERVER_PACKAGE, PACKAGE_DIRECTORY)
   end
   
   puts "Creating server package #{package_file}"
@@ -120,8 +120,8 @@ end
 # @param patches [Array<Pockit::Mod>] Set of mod patches
 # @return [null]
 def package_server_jar_patch (patches)
-  package = Pockit::Package.new(JAR_PATCH_SERVER_PACKAGE)
   puts "Creating server modpack.jar"
+  package = Pockit::Package.new(JAR_PATCH_SERVER_PACKAGE)
   
   # Unzip all patches
   patches.each do |mod|
