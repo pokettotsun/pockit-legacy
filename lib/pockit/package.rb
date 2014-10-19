@@ -30,6 +30,8 @@ module Pockit
     def create (verbose = true)
       return if @contents.length <= 0
       File.delete(@target) if File.exist?(@target)
+      dir = File.dirname(@target)
+      FileUtils.mkpath(dir) unless Dir.exist?(dir)
       
       files    = file_list
       sizes    = file_sizes(files)
