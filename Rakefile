@@ -6,7 +6,7 @@ require_relative 'lib/pockit/utility'
 
 PACKAGE_DIRECTORY          = 'pkg'
 PACKAGE_MODS_DIRECTORY     = File.join(PACKAGE_DIRECTORY, 'mods')
-PACKAGE_COREMODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'coremod')
+PACKAGE_COREMODS_DIRECTORY = File.join(PACKAGE_DIRECTORY, 'coremods')
 JAR_PATCH_CLIENT_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_client_jar')
 JAR_PATCH_CLIENT_PACKAGE   = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
 JAR_PATCH_SERVER_DIR       = File.join(PACKAGE_DIRECTORY, 'modpack_server_jar')
