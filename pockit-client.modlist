@@ -1,6 +1,7 @@
 {
 	"mods": [
 		"forge",
+		"optifine",
 		"code-chicken-core",
 		"nei",
 		"ars-magica2",
