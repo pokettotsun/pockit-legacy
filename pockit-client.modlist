@@ -16,6 +16,7 @@
 		"mantle",
 		"tinkers-construct",
 		"extra-tic",
-		"tic-tooltips"
+		"tic-tooltips",
+		"pumpkin-carvier"
 	]
 }
