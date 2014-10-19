@@ -81,7 +81,10 @@ def package_client (modpack)
       mod, path = *entry
       progress = sprintf(format, "#{done}/#{count}")
       puts "[#{progress}] #{mod.name}: #{mod.url}"
-      list_file_contents(path).each { |file| package.add(file) }
+      list_package_contents(path).each do |file|
+        package_file = File.join(PACKAGE_DIRECTORY, file)
+        package.add(package_file, PACKAGE_DIRECTORY)
+      end
       system('unzip', '-qq', '-o', '-d', PACKAGE_DIRECTORY, path) or raise "unzip #{path} failed"
       done += 1
     end
@@ -146,7 +149,10 @@ def package_server (modpack)
       mod, path = *entry
       progress = sprintf(format, "#{done}/#{count}")
       puts "[#{progress}] #{mod.name}: #{mod.url}"
-      list_file_contents(path).each { |file| package.add(file) }
+      list_package_contents(path).each do |file|
+        package_file = File.join(PACKAGE_DIRECTORY, file)
+        package.add(package_file, PACKAGE_DIRECTORY)
+      end
       system('unzip', '-qq', '-o', '-d', PACKAGE_DIRECTORY, path) or raise "unzip #{path} failed"
       done += 1
     end
@@ -225,12 +231,12 @@ end
 # @param path [String] Path to the package to inspect
 # @return [Array<String>] List of package contents
 def list_package_contents (path)
-  output = `unzip -l '#{path}`
+  output = `unzip -l '#{path}'`
   lines  = output.split(/[\r\n]+/)
-  lines.shift! #   Length      Date    Time    Name
-  lines.shift! # ---------  ---------- -----   ----
-  lines.pop!   # ---------                     -------
-  lines.pop!   #  42822195                     13 files
+  lines.shift #   Length      Date    Time    Name
+  lines.shift # ---------  ---------- -----   ----
+  lines.pop   # ---------                     -------
+  lines.pop   #  42822195                     13 files
   
   # 2740674  2014-10-19 00:48   bin/modpack.jar
   #    0          1       2           3
