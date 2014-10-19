@@ -45,6 +45,7 @@
 		"infernal-mobs",
 		"ropes-plus",
 		"ruins",
-		"stalker-creepers"
+		"stalker-creepers",
+		"pockit-config-customizations"
 	]
 }
