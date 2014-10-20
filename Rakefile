@@ -3,6 +3,8 @@ require_relative 'lib/pockit/modpack'
 require_relative 'lib/pockit/package'
 require_relative 'lib/pockit/utility'
 
+include Pockit::Utility
+
 PACKAGE_DIRECTORY           = 'pkg'
 PACKAGE_MODS_DIRECTORY      = File.join(PACKAGE_DIRECTORY, 'mods')
 PACKAGE_COREMODS_DIRECTORY  = File.join(PACKAGE_DIRECTORY, 'coremods')
@@ -123,11 +125,11 @@ def prepare_package (package_file, modlist, patch_dir)
       mod, path = *entry
       progress = sprintf(format, "#{done}/#{count}")
       puts "[#{progress}] #{mod.name}: #{mod.url}"
-      Pockit::Utility.list_package_contents(path).each do |entry|
+      list_package_contents(path).each do |entry|
         file = File.join(PACKAGE_DIRECTORY, entry)
         package.add(file, PACKAGE_DIRECTORY)
       end
-      Pockit::Utility.unzip(path, PACKAGE_DIRECTORY)
+      unzip(path, PACKAGE_DIRECTORY)
       done += 1
     end
   end
@@ -144,7 +146,7 @@ def package_jar_patch (patches, patch_dir)
   # Unzip all patches
   patches.each do |mod|
     path = mod_download_location(mod)
-    Pockit::Utility.unzip(path, patch_dir)
+    unzip(path, patch_dir)
   end
   
   # Create the patch jar
@@ -182,9 +184,9 @@ def download_mod (mod)
   FileUtils.mkpath(dir) unless Dir.exist?(dir)
   
   if http_auth
-    Pockit::Utility.download_auth(mod.url, dir, ENV['http_user'], ENV['http_pass'])
+    download_auth(mod.url, dir, ENV['http_user'], ENV['http_pass'])
   else
-    Pockit::Utility.download(mod.url, dir)
+    download(mod.url, dir)
   end
 end
 
@@ -192,7 +194,7 @@ end
 # @param mod [Pockit::Mod]
 # @return [String] Path to where the mod should be saved
 def mod_download_location (mod)
-  file = Pockit::Utility.url_filename(mod.url)
+  file = url_filename(mod.url)
   dir  = case mod.type
   when :core    then PACKAGE_COREMODS_DIRECTORY
   when :content then PACKAGE_DIRECTORY

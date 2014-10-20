@@ -8,7 +8,7 @@ module Pockit
     # Extracts the filename from a URL
     # @param url [String] URL of the file
     # @return [String] Filename pulled from the URL
-    def self.url_filename (url)
+    def url_filename (url)
       uri = URI.parse(url)
       File.basename(uri.path)
     end
@@ -17,8 +17,8 @@ module Pockit
     # @param url  [String] URL of the file
     # @param dest [String] Destination directory to save the file in
     # @return [null]
-    def self.download (url, dest)
-      wrap_download(url, dest) {|url| open(url).read}
+    def download (url, dest)
+      wrap_download(url, dest) { |uri| open(uri).read }
     end
     
     # Downloads the contents at a URL that require authentication into a destination directory
@@ -27,8 +27,8 @@ module Pockit
     # @param user [String] HTTP basic authentication username
     # @param pass [String] HTTP basic authentication password
     # @return [null]
-    def self.download_auth (url, dest, user, pass)
-      wrap_download(url, dest) {|url| open(url, :http_basic_authentication => [user, pass]).read}
+    def download_auth (url, dest, user, pass)
+      wrap_download(url, dest) { |uri| open(uri, :http_basic_authentication => [user, pass]).read }
     end
     
     # Sets up the output file to write content to it from a URL
@@ -36,7 +36,7 @@ module Pockit
     # @dest [String] Destination directory to save the file in
     # @block Block returning the contents of the URL
     # @return [String] Path to the output file
-    def self.wrap_download (url, dest, &block)
+    def wrap_download (url, dest, &block)
       filename = url_filename(url)
       filepath = File.join(dest, filename)
       
@@ -45,7 +45,7 @@ module Pockit
           file.write block.call(url)
         end
       rescue Exception => e
-        puts "Failed to download #{url} to #{filepath} - do you need authentication?"
+        puts "Download failed #{url} => #{filepath} - do you need authentication?"
         File.delete(filepath) if File.exist?(filepath)
         raise e
       end
@@ -53,24 +53,12 @@ module Pockit
       filepath
     end
     
-    # Creates a zip file from files matching filters
-    # @param zip_file [String]        Path to the zip file to create
-    # @param filters  [Array<String>] Set of file filters
-    # @return [null]
-    def self.zip (zip_file, *filters)
-      filters.each do |filter|
-        Dir.glob(filter).each do |filepath|
-          system('zip', '-g', zip_file, filepath)
-        end
-      end
-    end
-    
     # Extracts the contents of a zip or jar file to another directory
     # @param zip_file         [String] Path to the zip or jar file to extract
     # @param output_directory [String] Path to the directory to extract the files to
     # @return [null]
     def unzip (zip_file, output_directory)
-      system('unzip', '-qq', '-o', '-d', output_directory, zip_file) or raise "unzip #{zip_file} failed"
+      system('unzip', '-qq', '-o', '-d', output_directory, zip_file) or raise "Unzip failed for #{zip_file}"
     end
     
     # Retrieves a list of files in a zip or jar
