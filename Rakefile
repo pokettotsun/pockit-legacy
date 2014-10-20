@@ -96,7 +96,7 @@ def package_client (modpack)
       mod, path = *entry
       progress = sprintf(format, "#{done}/#{count}")
       puts "[#{progress}] #{mod.name}: #{mod.url}"
-      list_package_contents(path).each do |file|
+      Pockit::Utility.list_package_contents(path).each do |file|
         package_file = File.join(PACKAGE_DIRECTORY, file)
         package.add(package_file, PACKAGE_DIRECTORY)
       end
@@ -164,7 +164,7 @@ def package_server (modpack)
       mod, path = *entry
       progress = sprintf(format, "#{done}/#{count}")
       puts "[#{progress}] #{mod.name}: #{mod.url}"
-      list_package_contents(path).each do |file|
+      Pockit::Utility.list_package_contents(path).each do |file|
         package_file = File.join(PACKAGE_DIRECTORY, file)
         package.add(package_file, PACKAGE_DIRECTORY)
       end
@@ -244,22 +244,6 @@ def mod_download_location (mod)
   else               PACKAGE_MODS_DIRECTORY
   end
   File.join(dir, file)
-end
-
-# Retrieves a list of files in a zip or jar
-# @param path [String] Path to the package to inspect
-# @return [Array<String>] List of package contents
-def list_package_contents (path)
-  output = `unzip -l '#{path}'`
-  lines  = output.split(/[\r\n]+/)
-  lines.shift #   Length      Date    Time    Name
-  lines.shift # ---------  ---------- -----   ----
-  lines.pop   # ---------                     -------
-  lines.pop   #  42822195                     13 files
-  
-  # 2740674  2014-10-19 00:48   bin/modpack.jar
-  #    0          1       2           3
-  lines.map { |line| line.strip.split(/\s+/)[3] }
 end
 
 # Checks whether HTTP authentication is provided
