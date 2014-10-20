@@ -1,5 +1,4 @@
 require 'rake'
-require 'rake/clean'
 require_relative 'lib/pockit/modpack'
 require_relative 'lib/pockit/package'
 require_relative 'lib/pockit/utility'
@@ -13,10 +12,6 @@ JAR_PATCH_SERVER_DIR        = File.join(PACKAGE_DIRECTORY, 'modpack_server_jar')
 JAR_PATCH_SERVER_PACKAGE    = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
 LINUX_SERVER_START_SCRIPT   = 'start.sh'
 WINDOWS_SERVER_START_SCRIPT = 'start.bat'
-
-CLEAN.include('*.zip')
-CLEAN.include('*.jar')
-CLEAN.include(PACKAGE_DIRECTORY)
 
 task :default => ['client', 'server']
 
@@ -36,6 +31,24 @@ task :server do
   
   download_list(modpack.server_mods)
   package_server(modpack)
+end
+
+desc 'Cleans artifacts produced by the build'
+task :clean do
+  # Remove zip and jar files in top-level directory
+  files = []
+  files.concat(Dir.glob('*.jar'))
+  files.concat(Dir.glob('*.zip'))
+  files.each do |file|
+    puts "- #{file}"
+    File.delete(file)
+  end
+  
+  # Remove package directory
+  if Dir.exist?(PACKAGE_DIRECTORY)
+    puts "- #{PACKAGE_DIRECTORY}/"
+    FileUtils.rm_r(PACKAGE_DIRECTORY)
+  end
 end
 
 # Attempts to find a modpack to build
