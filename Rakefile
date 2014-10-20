@@ -100,7 +100,7 @@ def package_client (modpack)
         package_file = File.join(PACKAGE_DIRECTORY, file)
         package.add(package_file, PACKAGE_DIRECTORY)
       end
-      system('unzip', '-qq', '-o', '-d', PACKAGE_DIRECTORY, path) or raise "unzip #{path} failed"
+      Pockit::Utility.unzip(path, PACKAGE_DIRECTORY)
       done += 1
     end
   end
@@ -119,7 +119,7 @@ def package_client_jar_patch (patches)
   # Unzip all patches
   patches.each do |mod|
     path = mod_download_location(mod)
-    system('unzip', '-qq', '-o', '-d', JAR_PATCH_CLIENT_DIR, path) or raise "unzip #{path} failed"
+    Pockit::Utility.unzip(path, JAR_PATCH_CLIENT_DIR)
   end
   
   # Create the patch jar
@@ -168,7 +168,7 @@ def package_server (modpack)
         package_file = File.join(PACKAGE_DIRECTORY, file)
         package.add(package_file, PACKAGE_DIRECTORY)
       end
-      system('unzip', '-qq', '-o', '-d', PACKAGE_DIRECTORY, path) or raise "unzip #{path} failed"
+      Pockit::Utility.unzip(path, PACKAGE_DIRECTORY)
       done += 1
     end
   end
@@ -191,7 +191,7 @@ def package_server_jar_patch (patches)
   # Unzip all patches
   patches.each do |mod|
     path = mod_download_location(mod)
-    system('unzip', '-qq', '-o', '-d', JAR_PATCH_SERVER_DIR, path) or raise "unzip #{path} failed"
+    Pockit::Utility.unzip(path, JAR_PATCH_SERVER_DIR)
   end
   
   # Create the patch jar

@@ -57,6 +57,14 @@ module Pockit
       end
     end
     
+    # Extracts the contents of a zip or jar file to another directory
+    # @param zip_file         [String] Path to the zip or jar file to extract
+    # @param output_directory [String] Path to the directory to extract the files to
+    # @return [null]
+    def unzip (zip_file, output_directory)
+      system('unzip', '-qq', '-o', '-d', output_directory, zip_file) or raise "unzip #{zip_file} failed"
+    end
+    
     # Retrieves a list of files in a zip or jar
     # @param path [String] Path to the package to inspect
     # @return [Array<String>] List of package contents
