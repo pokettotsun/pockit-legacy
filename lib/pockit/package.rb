@@ -33,33 +33,58 @@ module Pockit
       dir = File.dirname(@target)
       FileUtils.mkpath(dir) unless Dir.exist?(dir)
       
-      files    = file_list
-      sizes    = file_sizes(files)
-      zip_args = ['-q', '-g']
+      # Get files and their sizes
+      files = file_list
+      sizes = file_sizes(files)
       
       progress, total = 0, 0
-      sizes.each { |size| total += size }
-      total = total.to_f
+      if verbose
+        # Calculate total input size
+        sizes.each { |size| total += size }
+        total = total.to_f
+      end
+      
       files.zip(sizes).each do |entry, size|
-        file, strip = *entry
+        src_file, strip     = *entry
+        zip_file, dest_file = nil, nil
+        
+        if strip and !strip.empty?
+          # Strip the beginning of the path off of the file by changing directories
+          up_str    = '../' * strip.count('/')
+          zip_file  = up_str + @target
+          dest_file = src_file[strip.length, src_file.length - strip.length]
+        else
+          # Add the file from where it is
+          zip_file  = @target
+          dest_file = src_file
+          strip     = nil
+        end
+        
         if verbose
+          # Display percentage information
           percent     = (progress / total * 100).round(0)
           percent_str = sprintf('%3d', percent)
-          puts "[#{percent_str}%] #{file}"
+          puts "[#{percent_str}%] #{src_file} => #{@target}:#{dest_file}"
+          progress += size
         end
         
-        pid = if strip and strip.length > 0
-          up_str   = '../' * strip.count('/')
-          zip_file = up_str + @target
-          rel_file = file[strip.length, file.length - strip.length]
-          spawn('zip', *zip_args, zip_file, rel_file, :chdir => strip)
-        else
-          spawn('zip', *zip_args, @target, file) or raise 'zip failed'
-        end
-        Process.wait(pid) or raise 'zip failed'
-        
-        progress += size
+        zip(zip_file, dest_file, strip)
       end
+    end
+    
+    # Adds a file to a zip archive
+    # @param zip_file [String]       Path to the zip file
+    # @param file     [String]       Path to the file to add
+    # @param dir      [String, null] Directory to be in when zipping
+    # @return [null]
+    def zip (zip_file, file, dir = nil)
+      zip_args = ['-q', '-g']
+      pid = if dir
+        spawn('zip', *zip_args, zip_file, file, :chdir => dir)
+      else
+        spawn('zip', *zip_args, zip_file, file)
+      end
+      Process.wait(pid) or raise 'Zip failed'
     end
     
     # Generates the complete list of files to include in the package
