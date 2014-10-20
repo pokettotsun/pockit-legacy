@@ -1,6 +1,6 @@
 {
 	"id"         : "thermal-expansion",
-	"name"       : "Thermal Expasion",
+	"name"       : "Thermal Expansion",
 	"author"     : "Team CoFH",
 	"version"    : "4.0.0B5-13",
 	"mc_version" : "1.7.10",
