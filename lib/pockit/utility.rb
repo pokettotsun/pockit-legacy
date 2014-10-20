@@ -38,10 +38,18 @@ module Pockit
     # @return [String] Path to the output file
     def self.wrap_download (url, dest, &block)
       filename = url_filename(url)
-      filepath = "#{dest}/#{filename}"
-      File.open(filepath, 'wb') do |file|
-        file.write block.call(url)
+      filepath = File.join(dest, filename)
+      
+      begin
+        File.open(filepath, 'wb') do |file|
+          file.write block.call(url)
+        end
+      rescue Exception => e
+        puts "Failed to download #{url} to #{filepath} - do you need authentication?"
+        File.delete(filepath) if File.exist?(filepath)
+        raise e
       end
+      
       filepath
     end
     
