@@ -133,6 +133,8 @@ def prepare_package (package_file, modlist, patch_dir)
       done += 1
     end
   end
+  
+  package
 end
 
 # Creates the modpack.jar needed to patch minecraft.jar
