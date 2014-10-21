@@ -5,6 +5,7 @@ require_relative 'lib/pockit/utility'
 
 include Pockit::Utility
 
+CONFIG_DIRECTORY            = 'config'
 PACKAGE_DIRECTORY           = 'pkg'
 PACKAGE_MODS_DIRECTORY      = File.join(PACKAGE_DIRECTORY, 'mods')
 PACKAGE_COREMODS_DIRECTORY  = File.join(PACKAGE_DIRECTORY, 'coremods')
@@ -134,6 +135,7 @@ def prepare_package (package_file, modlist, patch_dir)
     end
   end
   
+  package.add(CONFIG_DIRECTORY) if Dir.exist?(CONFIG_DIRECTORY) # Add custom configuration
   package
 end
 
