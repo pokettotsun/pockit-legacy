@@ -92,12 +92,16 @@ module Pockit
     def file_list
       files = []
       @contents.zip(@strip).each do |path, strip|
-        if File.exist?(path) # path is a file
-          files << [path, strip]
-        elsif Dir.exist?(path) # path is a directory
+        found = false
+        if Dir.exist?(path) # path is a file
+          found = true
           add_directory(path, strip, files)
-        else # path is a glob pattern
-          add_glob(path, strip, files)
+        end
+        if File.exist?(path) # path is a directory
+          found = true
+          files << [path, strip]
+        end
+        add_glob(path, strip, files) unless found # Path is a glob
         end
       end
       files
