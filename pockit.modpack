@@ -1,7 +1,7 @@
 {
 	"name"            : "pockit",
 	"description"     : "Think of something witty to put here.",
-	"modpack_version" : "0.3.1.0",
+	"modpack_version" : "0.3.2.0",
 	"mc_version"      : "1.7.10",
 	"author"          : ["bluepixelmike", "pokettotsun"],
 	"website"         : "",
