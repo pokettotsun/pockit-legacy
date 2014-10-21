@@ -2,7 +2,6 @@
 	"mods": [
 		"forge",
 		"optifine",
-		"map-writer",
 		"mine-tweaker",
 		"mod-tweaker",
 		"code-chicken-core",
