@@ -2,6 +2,7 @@
 	"mods": [
 		"forge",
 		"optifine",
+		"mod-tweaker",
 		"code-chicken-core",
 		"dynamic-lights",
 		"nei",

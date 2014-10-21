@@ -1,6 +1,7 @@
 {
 	"mods": [
 		"minecraft-server-forge",
+		"mod-tweaker",
 		"code-chicken-core",
 		"nei",
 		"waila",
