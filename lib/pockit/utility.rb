@@ -67,6 +67,7 @@ module Pockit
     def list_package_contents (path)
       output = `unzip -l '#{path}'`
       lines  = output.split(/[\r\n]+/)
+      lines.shift # Archive:  pkg/bspkrs-core-1.7.10.zip
       lines.shift #   Length      Date    Time    Name
       lines.shift # ---------  ---------- -----   ----
       lines.pop   # ---------                     -------
