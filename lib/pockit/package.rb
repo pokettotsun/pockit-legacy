@@ -7,8 +7,7 @@ module Pockit
     # @param target [String] Path to the package file to create (with the extension)
     def initialize (target)
       @target   = target
-      @contents = []
-      @strip    = []
+      @contents = {}
     end
     
     # Adds a file, directory, or path pattern to the package
@@ -16,11 +15,16 @@ module Pockit
     # @param strip [String] Directory path to strip from the beginning of +path+ during creation
     # @return [null]
     def add (path, strip = nil)
-      @contents << path
       if strip
-        @strip << (strip.end_with?('/') ? strip : strip + '/')
+        strip += '/' unless strip.end_with?('/')
       else
-        @strip << nil
+        strip = nil
+      end
+      
+      if Dir.exist?(path) or File.exist?(path)
+        add_entry(path, strip)
+      else
+        add_glob(path, strip)
       end
     end
     
@@ -33,21 +37,16 @@ module Pockit
       dir = File.dirname(@target)
       FileUtils.mkpath(dir) unless Dir.exist?(dir)
       
-      # Get files and their sizes
-      files = file_list
-      sizes = file_sizes(files)
-      
+      sizes = file_sizes
       progress, total = 0, 0
       if verbose
         # Calculate total input size
-        sizes.each { |size| total += size }
+        sizes.each_value { |size| total += size }
         total = total.to_f
       end
       
-      files.zip(sizes).each do |entry, size|
-        src_file, strip     = *entry
+      @contents.each_pair do |src_file, strip|
         zip_file, dest_file = nil, nil
-        
         if strip and !strip.empty?
           # Strip the beginning of the path off of the file by changing directories
           up_str    = '../' * strip.count('/')
@@ -62,10 +61,11 @@ module Pockit
         
         if verbose
           # Display percentage information
+          file_size   = sizes[src_file]
           percent     = (progress / total * 100).round(0)
           percent_str = sprintf('%3d', percent)
           puts "[#{percent_str}%] #{src_file} => #{@target}:#{dest_file}"
-          progress += size
+          progress += file_size
         end
         
         zip(zip_file, dest_file, strip)
@@ -87,71 +87,52 @@ module Pockit
       Process.wait(pid) or raise 'Zip failed'
     end
     
-    # Generates the complete list of files to include in the package
-    # @return [Array<Array<String>>] List of files
-    def file_list
-      files = []
-      @contents.zip(@strip).each do |path, strip|
-        found = false
-        if Dir.exist?(path) # path is a file
-          found = true
-          add_directory(path, strip, files)
-        end
-        if File.exist?(path) # path is a directory
-          found = true
-          files << [path, strip]
-        end
-        add_glob(path, strip, files) unless found # Path is a glob
-        end
-      end
-      files
-    end
-    
     # Recursively adds the contents of a directory to a file list
-    # @param path  [String]               Directory path
-    # @param strip [String]               Path prefix to strip from zip files
-    # @param files [Array<Array<String>>] File list to append to
+    # @param path  [String] Directory path
+    # @param strip [String] Path prefix to strip from zip files
     # @return [null]
-    def add_directory (path, strip, files)
+    def add_directory (path, strip)
       Dir.entries(path).each do |entry|
         next if entry.start_with?('.')
         entry_path = File.join(path, entry)
-        add_entry(entry_path, strip, files)
+        add_entry(entry_path, strip)
       end
     end
     
     # Adds files matching a glob pattern
-    # @param pattern [String]               Glob pattern
-    # @param strip   [String]               Path prefix to strip from zip files
-    # @param files   [Array<Array<String>>] File list to append to
-    def add_glob (pattern, strip, files)
+    # @param pattern [String] Glob pattern
+    # @param strip   [String] Path prefix to strip from zip files
+    def add_glob (pattern, strip)
       Dir.glob(pattern).each do |entry|
         next if entry.start_with?('.')
-        add_entry(entry, strip, files)
+        add_entry(entry, strip)
       end
     end
     
     # Adds a file or directory to a file list
-    # @param path  [String]               File or directory path
-    # @param strip [String]               Path prefix to strip from zip files
-    # @param files [Array<Array<String>>] File list to append to
+    # @param path  [String] File or directory path
+    # @param strip [String] Path prefix to strip from zip files
     # @return [null]
-    def add_entry (path, strip, files)
+    def add_entry (path, strip)
       if File.stat(path).file? # entry is a file
-        files << [path, strip]
+        @contents[path] = strip
       elsif File.stat(path).directory? # entry is a directory
-        add_directory(path, strip, files)
+        add_directory(path, strip)
       end
     end
     
-    # Retrieves the size of a set of files
-    # @param files [Array<Array<String>>] List of file names
-    # @return [Array<Fixnum>] Number of bytes for each file
-    def file_sizes (files)
-      files.map { |entry| File.stat(entry[0]).size }
+    # Retrieves the file sizes of each package entry
+    # @return [Hash<String, Fixnum>] Mapping of filename to file size in bytes
+    def file_sizes
+      sizes = {}
+      @contents.each_key.map do |file|
+        size = File.stat(file).size
+        sizes[file] = size
+      end
+      sizes
     end
     
-    private :file_list, :add_directory, :add_glob
+    private :zip, :add_directory, :add_glob, :add_entry, :file_sizes
     
   end
   
