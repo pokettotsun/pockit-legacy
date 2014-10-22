@@ -126,11 +126,11 @@ def prepare_package (package_file, modlist, patch_dir)
       mod, path = *entry
       progress = sprintf(format, "#{done}/#{count}")
       puts "[#{progress}] #{mod.name}: #{mod.url}"
+      unzip(path, PACKAGE_DIRECTORY)
       list_package_contents(path).each do |entry|
         file = File.join(PACKAGE_DIRECTORY, entry)
         package.add(file, PACKAGE_DIRECTORY)
       end
-      unzip(path, PACKAGE_DIRECTORY)
       done += 1
     end
   end
