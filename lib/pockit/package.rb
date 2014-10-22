@@ -37,10 +37,10 @@ module Pockit
       dir = File.dirname(@target)
       FileUtils.mkpath(dir) unless Dir.exist?(dir)
       
-      sizes = file_sizes
-      progress, total = 0, 0
+      progress, total, sizes = 0, 0, nil
       if verbose
         # Calculate total input size
+        sizes = file_sizes
         sizes.each_value { |size| total += size }
         total = total.to_f
       end
