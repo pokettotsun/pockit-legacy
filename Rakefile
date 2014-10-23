@@ -14,6 +14,7 @@ JAR_PATCH_SERVER_DIR        = File.join(PACKAGE_DIRECTORY, 'modpack_server_jar')
 JAR_PATCH_PACKAGE           = File.join(PACKAGE_DIRECTORY, 'bin', 'modpack.jar')
 LINUX_SERVER_START_SCRIPT   = 'start.sh'
 WINDOWS_SERVER_START_SCRIPT = 'start.bat'
+EULA_FILE                   = 'eula.txt'
 
 task :default => ['client', 'server']
 
@@ -79,9 +80,10 @@ def package_server (modpack)
   package_file = "#{modpack.name}-#{modpack.version}_#{modpack.mc_version}-server.zip"
   package      = prepare_package(package_file, modpack.server_mods, JAR_PATCH_SERVER_DIR)
   
-  # Add startup scripts
+  # Add startup scripts and EULA
   package.add(LINUX_SERVER_START_SCRIPT)
   package.add(WINDOWS_SERVER_START_SCRIPT)
+  package.add(EULA_FILE)
   
   puts "Creating server package #{package_file}"
   package.create
