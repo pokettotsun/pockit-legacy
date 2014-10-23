@@ -128,6 +128,7 @@ def prepare_package (package_file, modlist, patch_dir)
       puts "[#{progress}] #{mod.name}: #{mod.url}"
       unzip(path, PACKAGE_DIRECTORY)
       list_package_contents(path).each do |entry|
+        next if entry.end_with?('/') # Skip over directories, explicitly add files only
         file = File.join(PACKAGE_DIRECTORY, entry)
         package.add(file, PACKAGE_DIRECTORY)
       end
@@ -212,3 +213,4 @@ end
 def http_auth
   ENV['http_user'] and ENV['http_pass']
 end
+
