@@ -13,7 +13,7 @@ module Pockit
     # @param path [String] Path to the file to save to
     # @return [null]
     def create (path)
-      File.open(path) do |file|
+      File.open(path, 'w') do |file|
         write_modpack_info(file)
       end
     end
@@ -22,11 +22,21 @@ module Pockit
     # @param file [File] File to write to
     # @return [null]
     def write_modpack_info (file)
+      mods = {}
+      @modpack.client_mods.each { |mod| mods[mod.id] = 1 }
+      @modpack.server_mods.each { |mod| mods[mod.id] = 1 }
+      
       file.puts @modpack.name
       file.puts '=' * @modpack.name.length
       file.puts
       
-      file.puts "A modpack by #{@modpack.author.to_sentence}"
+      file.puts @modpack.description
+      file.puts "A modpack by #{@modpack.author.to_sentence} containing #{mods.length} mods"
+      file.puts "Version #{@modpack.version} for Minecraft #{@modpack.mc_version}"
+      file.puts @modpack.website if @modpack.website and @modpack.website.length > 0
+      file.puts
+      file.puts '-----'
+      file.puts
     end
     
     private :write_modpack_info
