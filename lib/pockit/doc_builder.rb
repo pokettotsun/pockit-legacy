@@ -31,8 +31,9 @@ module Pockit
       file.puts '=' * @modpack.name.length
       file.puts
       
+      author_str = @modpack.author.is_a?(Array) ? @modpack.author.to_sentence : @modpack.author
       file.puts @modpack.description
-      file.puts "A modpack by #{@modpack.author.to_sentence} containing #{mods.length} mods"
+      file.puts "A modpack by #{author_str} containing #{mods.length} mods"
       file.puts "Version #{@modpack.version} for Minecraft #{@modpack.mc_version}"
       file.puts @modpack.website if @modpack.website and @modpack.website.length > 0
       file.puts
@@ -68,7 +69,21 @@ module Pockit
     # @param side [Symbol]      +:client+, +:server+, or +:both+
     # @return [null]
     def write_mod_entry (file, mod, side)
-      # TODO
+      file.puts "### #{mod.name}"
+      
+      case side
+      when :client then file.puts '**Client only**'
+      when :server then  file.puts '**Server only**'
+      end
+      
+      author_str = mod.author.is_a?(Array) ? mod.author.to_sentence : mod.author
+      file.puts "by #{author_str}"
+      file.puts "Version #{mod.version} for Minecraft #{mod.mc_version}"
+      file.puts mod.website if mod.website and mod.website.length > 0
+      file.puts
+      file.puts mod.description if mod.description and mod.description.length > 0
+      file.puts "**Notes:** #{mod.notes}" if mod.notes and mod.notes.length > 0
+      file.puts
     end
     
     private :write_modpack_info, :write_mod_list, :write_mod_entry
