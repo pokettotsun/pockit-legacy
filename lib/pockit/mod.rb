@@ -26,6 +26,9 @@ module Pockit
     # URL of information about the mod
     attr_reader :website
     
+    # Brief description of what the mod is/does
+    attr_reader :description
+    
     # Additional notes about the mod, such as tweaks
     attr_reader :notes
     
@@ -48,15 +51,17 @@ module Pockit
     end
     
     # Create a new mod reference
-    def initialize (id, name, author, version, mc_version, url, website, notes, type)
-      @id         = id
-      @name       = name
-      @author     = author
-      @version    = version
-      @mc_version = mc_version
-      @url        = url
-      @notes      = notes
-      @type       = type
+    def initialize (id, name, author, version, mc_version, url, website, description, notes, type)
+      @id          = id
+      @name        = name
+      @author      = author
+      @version     = version
+      @mc_version  = mc_version
+      @url         = url
+      @website     = website
+      @description = description
+      @notes       = notes
+      @type        = type
     end
     
     # Loads mod information from a file
@@ -66,24 +71,26 @@ module Pockit
       json = File.read(path)
       data = JSON.parse(json)
       
-      id         = data['id']
-      name       = data['name']
-      author     = data['author']
-      version    = data['version']
-      mc_version = data['mc_version']
-      url        = data['url']
-      website    = data['website']
-      notes      = data['notes']
-      type_str   = data['type']
+      id          = data['id']
+      name        = data['name']
+      author      = data['author']
+      version     = data['version']
+      mc_version  = data['mc_version']
+      url         = data['url']
+      website     = data['website']
+      description = data['description']
+      notes       = data['notes']
+      type_str    = data['type']
       type = case type_str
       when 'core'    then :core
       when 'jar'     then :jar
       when 'content' then :content
       else                :normal
       end
-      Pockit::Mod.new(id, name, author, version, mc_version, url, website, notes, type)
+      Pockit::Mod.new(id, name, author, version, mc_version, url, website, description,  notes, type)
     end
 
   end
 
 end
+
