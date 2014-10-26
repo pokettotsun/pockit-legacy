@@ -15,6 +15,7 @@ module Pockit
     def create (path)
       File.open(path, 'w') do |file|
         write_modpack_info(file)
+        write_mod_list(file)
       end
     end
     
@@ -39,7 +40,38 @@ module Pockit
       file.puts
     end
     
-    private :write_modpack_info
+    # Writes the list of mods
+    # @param file [File] File to write to
+    # @return [null]
+    def write_mod_list (file)
+      file.puts 'Contents'
+      file.puts '--------'
+      file.puts
+      
+      # Mark each mod as being client-only, server-only, or both
+      mods = {}
+      @modpack.client_mods.each { |mod| mods[mod.id] = [:client, mod] }
+      @modpack.server_mods.each { |mod| mods[mod.id] = (mods.key?(mod.id) ? [:both, mod] : [:server, mod]) }
+      
+      # Produce an entry for each mod
+      order = mods.keys.sort
+      order.each do |id|
+        entry = mods[id]
+        side, mod = *entry
+        write_mod_entry(file, mod, side)
+      end
+    end
+    
+    # Writes information about a single mod
+    # @param file [File]        File to write to
+    # @param mod  [Pockit::Mod] Mod to produce output for
+    # @param side [Symbol]      +:client+, +:server+, or +:both+
+    # @return [null]
+    def write_mod_entry (file, mod, side)
+      # TODO
+    end
+    
+    private :write_modpack_info, :write_mod_list, :write_mod_entry
     
   end
 
