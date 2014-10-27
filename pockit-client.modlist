@@ -1,6 +1,7 @@
 {
 	"mods": [
 		"forge",
+		"biomes-o-plenty",
 		"grimoire-of-gaia-2"
 	]
 }
