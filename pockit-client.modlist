@@ -1,6 +1,7 @@
 {
 	"mods": [
 		"forge",
+		"optifine-hd-standard",
 		"biomes-o-plenty",
 		"grimoire-of-gaia-2"
 	]
