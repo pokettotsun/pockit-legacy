@@ -8,5 +8,5 @@
 	"website"     : "http://files.minecraftforge.net/",
 	"description" : "Forge ModLoader",
 	"notes"       : "Required for.. pretty much everything.",
-	"type"        : "normal"
+	"type"        : "jar"
 }
