@@ -2,6 +2,7 @@ require 'rake'
 require_relative 'lib/pockit/modpack'
 require_relative 'lib/pockit/package'
 require_relative 'lib/pockit/utility'
+require_relative 'lib/pockit/doc_builder'
 
 include Pockit::Utility
 
@@ -34,6 +35,14 @@ task :server do
   
   download_list(modpack.server_mods)
   package_server(modpack)
+end
+
+desc 'Creates a markdown document containing information about the modpack'
+task :doc do
+  modpack     = find_modpack
+  doc_file    = "#{modpack.name}.md"
+  doc_builder = Pockit::DocBuilder.new(modpack)
+  doc_builder.create(doc_file)
 end
 
 desc 'Cleans artifacts produced by the build'
